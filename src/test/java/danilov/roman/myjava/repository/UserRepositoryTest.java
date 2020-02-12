@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class UserRepositoryTest {
 
-    private User userTest = new User("Roman", "9051831442", "test@test.ru");
+    private User userTest = new User("Roman", "9051831442", "test@test.ru", "password");
 
     @Autowired
     private UserRepository userRepository;
