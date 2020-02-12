@@ -1,24 +1,16 @@
 package danilov.roman.myjava;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 @SpringBootApplication
+@Log4j2
 public class MyjavaApplication {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		SpringApplication.run(MyjavaApplication.class, args);
-//		System.out.println("START");
-//
-//		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//		String s = reader.readLine();
-//		System.out.println("Пользователь ввел следующий текст:");
-//		System.out.println(s);
-//		reader.close();
+		log.info("Start Project Spring!!!");
 	}
 
 }

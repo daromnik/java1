@@ -19,11 +19,11 @@
             <th>Дата добавления</th>
         </tr>
         <tr th:each="user: ${users}">
-            <td th:text="${user.id}" />
-            <td th:text="${user.name}" />
-            <td th:text="${user.phone}" />
-            <td th:text="${user.email}" />
-            <td th:text="${user.createDate}" />
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.phone}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.createDate}"></td>
         </tr>
     </table>
 

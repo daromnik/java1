@@ -1,6 +1,7 @@
 package danilov.roman.myjava.model;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -33,4 +34,13 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+
+    public User() {
+    }
+
+    public User(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
 }

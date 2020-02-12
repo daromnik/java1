@@ -1,24 +1,27 @@
 package danilov.roman.myjava.controllers;
 
-import danilov.roman.myjava.repositories.UserRepository;
+import danilov.roman.myjava.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@Log4j2
+@RequestMapping("/users")
 public class UserController {
 
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public String users(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        log.info("Method - users");
+        model.addAttribute("users", userService.getAllUsers());
         return "user/users";
     }
 
