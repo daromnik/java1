@@ -49,7 +49,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
                 .email("daromnik@yandex.ru")
                 .phone("9051831442")
                 .password("123456")
-                .createDate(LocalDateTime.now())
                 .roles(Collections.singletonList(adminRole))
                 .build();
 
@@ -58,9 +57,11 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
                 .email("nekit@yandex.ru")
                 .phone("9051832222")
                 .password("password")
-                .createDate(LocalDateTime.now())
                 .roles(Collections.singletonList(userRole))
                 .build();
+
+        userAdmin.setCreateDate(LocalDateTime.now());
+        userSimple.setCreateDate(LocalDateTime.now());
 
         userRepository.save(userAdmin);
         userRepository.save(userSimple);

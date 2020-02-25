@@ -12,7 +12,6 @@ import java.util.Collection;
 
 @Entity
 @Data
-@Builder(toBuilder = true)
 public class User {
 
     @Id
@@ -49,24 +48,10 @@ public class User {
         this.password = password;
     }
 
+    @Builder()
     public User(String name, String phone, String email, String password, Collection<Role> roles) {
         this(name, phone, email, password);
         this.roles = roles;
-    }
-
-    public User(
-            int id,
-            String name,
-            String phone,
-            String email,
-            String password,
-            LocalDateTime createDate,
-            LocalDateTime updateDate,
-            Collection<Role> roles) {
-        this(name, phone, email, password, roles);
-        this.id = id;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
     }
 
     @ManyToMany
