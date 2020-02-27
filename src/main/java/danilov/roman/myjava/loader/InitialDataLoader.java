@@ -1,8 +1,10 @@
 package danilov.roman.myjava.loader;
 
+import danilov.roman.myjava.model.Address;
 import danilov.roman.myjava.model.Privilege;
 import danilov.roman.myjava.model.Role;
 import danilov.roman.myjava.model.User;
+import danilov.roman.myjava.repository.AddressRepository;
 import danilov.roman.myjava.repository.PrivilegeRepository;
 import danilov.roman.myjava.repository.RoleRepository;
 import danilov.roman.myjava.repository.UserRepository;
@@ -31,6 +33,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
     @Autowired
     PrivilegeRepository privilegeRepository;
 
+    @Autowired
+    AddressRepository addressRepository;
+
     private boolean isLoad = false;
 
     @Override
@@ -43,6 +48,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 
         Role adminRole = createRoleIfNotFound("ADMIN", Arrays.asList(readPrivilege, writePrivilege));
         Role userRole = createRoleIfNotFound("USER", Collections.singletonList(readPrivilege));
+
+        Address address = new Address("Vodoprovodnay 59, 31");
+        addressRepository.save(address);
 
         User userAdmin = User.builder()
                 .name("Danilov Roman")
@@ -62,6 +70,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 
         userAdmin.setCreateDate(LocalDateTime.now());
         userSimple.setCreateDate(LocalDateTime.now());
+
+        userAdmin.setAddress(address);
+        userSimple.setAddress(address);
 
         userRepository.save(userAdmin);
         userRepository.save(userSimple);
