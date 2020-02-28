@@ -7,12 +7,12 @@ import java.util.Set;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String address;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<User> users;
 
     public Address() {

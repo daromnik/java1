@@ -11,14 +11,13 @@ import danilov.roman.myjava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 
 @Component
@@ -36,6 +35,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
     @Autowired
     AddressRepository addressRepository;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private boolean isLoad = false;
 
     @Override
@@ -46,26 +48,28 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
         Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
         Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
 
-        Role adminRole = createRoleIfNotFound("ADMIN", Arrays.asList(readPrivilege, writePrivilege));
-        Role userRole = createRoleIfNotFound("USER", Collections.singletonList(readPrivilege));
+        Role adminRole = createRoleIfNotFound("ROLE_ADMIN", new HashSet<>(Arrays.asList(readPrivilege, writePrivilege)));
+        Role userRole = createRoleIfNotFound("ROLE_USER", new HashSet<>(Collections.singletonList(readPrivilege)));
 
         Address address = new Address("Vodoprovodnay 59, 31");
         addressRepository.save(address);
 
         User userAdmin = User.builder()
-                .name("Danilov Roman")
+                .username("Danilov Roman")
                 .email("daromnik@yandex.ru")
                 .phone("9051831442")
-                .password("123456")
-                .roles(Collections.singletonList(adminRole))
+                .password(bCryptPasswordEncoder.encode("123456"))
+//                .roles(Collections.singletonList(adminRole))
+                .roles(new HashSet<>(Collections.singletonList(adminRole)))
                 .build();
 
         User userSimple = User.builder()
-                .name("Petrov Nikita")
+                .username("Petrov Nikita")
                 .email("nekit@yandex.ru")
                 .phone("9051832222")
-                .password("password")
-                .roles(Collections.singletonList(userRole))
+                .password(bCryptPasswordEncoder.encode("password"))
+//                .roles(Collections.singletonList(userRole))
+                .roles(new HashSet<>(Collections.singletonList(userRole)))
                 .build();
 
         userAdmin.setCreateDate(LocalDateTime.now());
@@ -91,7 +95,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
     }
 
     @Transactional
-    public Role createRoleIfNotFound(String name, Collection<Privilege> privileges) {
+    public Role createRoleIfNotFound(String name, Set<Privilege> privileges) {
         Role role = roleRepository.findByName(name);
         if (role == null) {
             role = new Role(name);

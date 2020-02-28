@@ -1,18 +1,29 @@
 package danilov.roman.myjava.service;
 
+//import danilov.roman.myjava.model.Privilege;
+import danilov.roman.myjava.model.Role;
 import danilov.roman.myjava.model.User;
 import danilov.roman.myjava.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
@@ -22,10 +33,11 @@ public class UserService {
      * @return boolean false - если пользователь уже существует, true - если успешно добавился.
      */
     public boolean addUser(User user) {
-        User userFromBd = userRepository.getByEmail(user.getEmail());
+        User userFromBd = userRepository.findByEmail(user.getEmail());
         if (userFromBd != null) {
             return false;
         }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
@@ -47,5 +59,21 @@ public class UserService {
      */
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Возращает найденного по email пользователя
+     *
+     * @param email String
+     * @return User
+     */
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
     }
 }

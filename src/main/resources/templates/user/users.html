@@ -1,6 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="layouts/main_layout" lang="en">
 
 <head>
@@ -9,7 +9,6 @@
 
 <div layout:fragment="page_content">
     <h2>Users</h2>
-
     <table class="table table-striped table-sm">
         <tr>
             <th>ID</th>
@@ -17,13 +16,17 @@
             <th>Телефон</th>
             <th>Email</th>
             <th>Дата добавления</th>
+            <th></th>
+            <th></th>
         </tr>
         <tr th:each="user: ${users}">
             <td th:text="${user.id}"></td>
-            <td th:text="${user.name}"></td>
+            <td th:text="${user.username}"></td>
             <td th:text="${user.phone}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.createDate}"></td>
+            <td><a sec:authorize="hasRole('ADMIN')" th:href="@{'/users/edit/' + ${user.id}}">Edit</a></td>
+            <td><a sec:authorize="hasRole('ADMIN')" th:href="@{'/users/delete/' + ${user.id}}">Delete</a></td>
         </tr>
     </table>
 

@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @Log4j2
 @RequestMapping("/users")
@@ -19,7 +21,7 @@ public class UserController {
     }
 
     @GetMapping
-    public String users(Model model) {
+    public String users(Model model, HttpServletRequest request) {
         log.info("Method - users");
         model.addAttribute("users", userService.getAllUsers());
         return "user/users";

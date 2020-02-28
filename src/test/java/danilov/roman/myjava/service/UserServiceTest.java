@@ -7,6 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.*;
 
@@ -24,17 +26,17 @@ class UserServiceTest {
 
     @Test
     void addUserSuccessfully() {
-        when(userRepository.getByEmail(any())).thenReturn(null);
+        when(userRepository.findByEmail(any())).thenReturn(null);
         boolean isSave = userService.addUser(new User());
         assertTrue(isSave);
         ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-        verify(userRepository, times(1)).getByEmail(argument.capture());
+        verify(userRepository, times(1)).findByEmail(argument.capture());
         System.out.println(argument.getValue());
     }
 
     @Test
     void addUserWhenUserExists() {
-        when(userRepository.getByEmail(any())).thenReturn(new User());
+        when(userRepository.findByEmail(any())).thenReturn(new User());
         boolean isSave = userService.addUser(new User());
         assertFalse(isSave);
     }
@@ -70,6 +72,21 @@ class UserServiceTest {
         assertNotNull(allUsers);
         assertEquals(usersFromBd.size(), allUsers.size());
         verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getUserByUsernameWhenUserExist() {
+        when(userRepository.findByUsername("test")).thenReturn(new User());
+        UserDetails user = userService.loadUserByUsername("test");
+        assertNotNull(user);
+    }
+
+    @Test
+    void getUserByUsernameWhenUserNotExist() {
+        assertThrows(UsernameNotFoundException.class, () -> {
+            when(userRepository.findByUsername("test")).thenReturn(null);
+            userService.loadUserByUsername("test");
+        });
     }
 
 }
