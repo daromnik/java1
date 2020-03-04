@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -32,6 +34,7 @@ public class UserService implements UserDetailsService {
      * @param user User
      * @return boolean false - если пользователь уже существует, true - если успешно добавился.
      */
+    @Transactional
     public boolean addUser(User user) {
         User userFromBd = userRepository.findByEmail(user.getEmail());
         if (userFromBd != null) {
@@ -40,6 +43,12 @@ public class UserService implements UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    @Transactional
+    public void updateUser(User user) {
+        user.setUpdateDate(LocalDateTime.now());
+        userRepository.save(user);
     }
 
     /**
@@ -75,5 +84,11 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         return user;
+    }
+
+    @Transactional
+    public boolean deleteUser(int userId) {
+        userRepository.markUserDelete(userId);
+        return true;
     }
 }

@@ -45,6 +45,11 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
         if (isLoad) {
             return;
         }
+
+        if (userRepository.findByEmail("daromnik@yandex.ru") != null) {
+            return;
+        }
+
         Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
         Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
 
